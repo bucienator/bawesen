@@ -81,6 +81,8 @@
         <avrgcc.compiler.symbols.DefSymbols>
           <ListValues>
             <Value>NDEBUG</Value>
+            <Value>F_CPU=1000000</Value>
+            <Value>UART_CAN_SEND</Value>
           </ListValues>
         </avrgcc.compiler.symbols.DefSymbols>
         <avrgcc.compiler.directories.IncludePaths>
@@ -114,6 +116,8 @@
         <avrgcc.compiler.symbols.DefSymbols>
           <ListValues>
             <Value>DEBUG</Value>
+            <Value>F_CPU=1000000</Value>
+            <Value>UART_CAN_SEND</Value>
           </ListValues>
         </avrgcc.compiler.symbols.DefSymbols>
         <avrgcc.compiler.directories.IncludePaths>
@@ -136,8 +140,36 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BME280_driver\bme280.c">
+      <SubType>compile</SubType>
+      <Link>bme280.c</Link>
+    </Compile>
+    <Compile Include="BME280_driver\bme280.h">
+      <SubType>compile</SubType>
+      <Link>bme280.h</Link>
+    </Compile>
+    <Compile Include="bme280_interface.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="bme280_interface.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="spi.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="spi.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="uclib\libuart\uart.c">
+      <SubType>compile</SubType>
+      <Link>uart.c</Link>
+    </Compile>
+    <Compile Include="uclib\libuart\uart.h">
+      <SubType>compile</SubType>
+      <Link>uart.h</Link>
     </Compile>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
