@@ -8,7 +8,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "uclib/libuart/uart.h"
+#include "uart.h"
 #include "spi.h"
 #include "BME280_driver/bme280.h"
 #include "bme280_interface.h"
