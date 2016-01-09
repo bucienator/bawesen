@@ -19,7 +19,7 @@
 void init_uart()
 {
 
-	#define BAUD 1200
+	#define BAUD 14400
 	#include<util/setbaud.h>
 
 	UBRR0H = UBRRH_VALUE;
