@@ -6,6 +6,7 @@
  */ 
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include <util/delay.h>
 
 #include "uart.h"
@@ -60,6 +61,11 @@ void transmit_hexadecimal(unsigned char n)
 
 int main(void)
 {
+	cli();
+	CCP = 0xd8;
+	CLKPR = 3; // 1/8 clock prescaler
+	sei();
+
 	// power saver - uart
 	PRR &= ~(1 << PRUSART0);
 	init_uart();

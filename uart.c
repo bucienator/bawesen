@@ -19,12 +19,17 @@
 void init_uart()
 {
 
-	#define BAUD 28800
+	#define BAUD 1200
 	#include<util/setbaud.h>
 
 	UBRR0H = UBRRH_VALUE;
 	UBRR0L = UBRRL_VALUE;
+#if USE_2X
+	#warning use2x
+	UCSR0A |=  (1 << U2X0);
+#else
 	UCSR0A &= ~(1 << U2X0);
+#endif
 
 #ifdef UART_CAN_SEND
 	UCSR0B |= (1<<TXEN0); 
@@ -40,10 +45,6 @@ void init_uart()
 
 	UCSR0B &= ~(1<<UCSZ02);
 	UCSR0C = (3<<UCSZ00);
-
-	// this module is using port D7 for congestion error signaling
-	//DDRD |= (1<<DDD7) + (1<<DDD6);
-	//PORTD &= ~((1<<DDD7) + (1<<DDD6));
 
 }
 
@@ -138,7 +139,6 @@ char receive_char(char * data, char block)
 		while ( rxBufferStart & 0x80 );
 	}
 
-	//PORTD &= ~(1<<DDD6);
 	// load data to buffer
 	cli();
 	*data = rxBuffer[rxBufferEnd];
