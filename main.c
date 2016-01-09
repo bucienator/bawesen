@@ -59,6 +59,30 @@ void transmit_hexadecimal(unsigned char n)
 
 }
 
+void init_bme280(struct bme280_t * sens)
+{
+	bme280_init_interface(sens);
+	bme280_init(sens);
+	bme280_set_power_mode(sens, BME280_SLEEP_MODE);
+	bme280_set_standby_durn(sens, BME280_STANDBY_TIME_250_MS);
+	bme280_set_oversamp_humidity(sens, BME280_OVERSAMP_1X);
+	bme280_set_oversamp_temperature(sens, BME280_OVERSAMP_8X);
+	bme280_set_oversamp_pressure(sens, BME280_OVERSAMP_1X);
+	bme280_set_power_mode(sens, BME280_NORMAL_MODE);
+}
+
+void measure(struct bme280_t * sens)
+{
+		s32 temp;
+		bme280_read_uncomp_temperature(sens, &temp);
+		s32 tempc = bme280_compensate_temperature_int32(sens, temp);
+		transmit_decimal(tempc);
+
+		bme280_read_uncomp_humidity(sens, &temp);
+		tempc = bme280_compensate_humidity_int32(sens, temp);
+		transmit_decimal(tempc>>10);
+}
+
 int main(void)
 {
 	cli();
@@ -74,27 +98,17 @@ int main(void)
 	PRR &= ~(1 << PRSPI);
 	SPI_MasterInit();
 
-	struct bme280_t sens;
-	bme280_init_interface(&sens);
-	bme280_init(&sens);
-	bme280_set_power_mode(BME280_SLEEP_MODE);
-	bme280_set_standby_durn(BME280_STANDBY_TIME_250_MS);
-	bme280_set_oversamp_humidity(BME280_OVERSAMP_1X);
-	bme280_set_oversamp_temperature(BME280_OVERSAMP_8X);
-	bme280_set_oversamp_pressure(BME280_OVERSAMP_1X);
-	bme280_set_power_mode(BME280_NORMAL_MODE);
+	struct bme280_t s1, s2;
+	s1.dev_addr = 1;
+	s2.dev_addr = 2;
+	init_bme280(&s1);
+	init_bme280(&s2);
 
 	while(1)
 	{
-		s32 temp;
-		bme280_read_uncomp_temperature(&temp);
-		s32 tempc = bme280_compensate_temperature_int32(temp);
-		transmit_decimal(tempc);
-
-		bme280_read_uncomp_humidity(&temp);
-		tempc = bme280_compensate_humidity_int32(temp);
-		transmit_decimal(tempc>>10);
-
+		measure(&s1);
+		measure(&s2);
+		transmit_string("----\r\n");
 		_delay_ms(1000);
 	}
 }
